@@ -16,6 +16,7 @@ public class DefaultProviderConfiguration {
     private final long gpsWaitPeriod;
     private final long networkWaitPeriod;
     private final DialogProvider gpsDialogProvider;
+    private   boolean usePassiveProvider;
 
     private DefaultProviderConfiguration(Builder builder) {
         this.requiredTimeInterval = builder.requiredTimeInterval;
@@ -25,6 +26,7 @@ public class DefaultProviderConfiguration {
         this.gpsWaitPeriod = builder.gpsWaitPeriod;
         this.networkWaitPeriod = builder.networkWaitPeriod;
         this.gpsDialogProvider = builder.gpsDialogProvider;
+        this.usePassiveProvider = builder.usePassiveProvider;
     }
 
     public DefaultProviderConfiguration.Builder newBuilder() {
@@ -35,10 +37,15 @@ public class DefaultProviderConfiguration {
               .acceptableTimePeriod(acceptableTimePeriod)
               .setWaitPeriod(ProviderType.GPS, gpsWaitPeriod)
               .setWaitPeriod(ProviderType.NETWORK, networkWaitPeriod)
-              .gpsDialogProvider(gpsDialogProvider);
+              .gpsDialogProvider(gpsDialogProvider)
+                .usePassiveProvider(usePassiveProvider);
     }
 
     // region Getters
+
+    public boolean isUsePassiveProvider() {
+        return usePassiveProvider;
+    }
     public long requiredTimeInterval() {
         return requiredTimeInterval;
     }
@@ -83,6 +90,12 @@ public class DefaultProviderConfiguration {
         private long networkWaitPeriod = Defaults.WAIT_PERIOD;
         private DialogProvider gpsDialogProvider;
         private String gpsMessage = Defaults.EMPTY_STRING;
+        private boolean usePassiveProvider;
+
+        public Builder usePassiveProvider(boolean usePassiveProvider){
+            this.usePassiveProvider = usePassiveProvider;
+            return this;
+        }
 
         /**
          * TimeInterval will be used while getting location from default location providers

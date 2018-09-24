@@ -40,7 +40,7 @@ public class SampleActivity extends LocationBaseActivity implements SampleView {
 
     @Override
     public LocationConfiguration getLocationConfiguration() {
-        return Configurations.defaultConfiguration("Gimme the permission!", "Would you mind to turn GPS on?");
+        return Configurations.fastConfiguration("Gimme the permission!", "Would you mind to turn GPS on?");
     }
 
     @Override

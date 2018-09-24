@@ -7,7 +7,7 @@ import java.lang.annotation.RetentionPolicy;
 
 @IntDef({ProcessType.ASKING_PERMISSIONS, ProcessType.GETTING_LOCATION_FROM_GOOGLE_PLAY_SERVICES,
       ProcessType.GETTING_LOCATION_FROM_GPS_PROVIDER, ProcessType.GETTING_LOCATION_FROM_NETWORK_PROVIDER,
-      ProcessType.GETTING_LOCATION_FROM_CUSTOM_PROVIDER})
+      ProcessType.GETTING_LOCATION_FROM_CUSTOM_PROVIDER, ProcessType.GETTING_LOCATION_FROM_PASSIVE_PROVIDER})
 @Retention(RetentionPolicy.SOURCE)
 public @interface ProcessType {
 
@@ -41,4 +41,6 @@ public @interface ProcessType {
      * It is defined in case of a custom Location Provider set to LocationManager.
      */
     int GETTING_LOCATION_FROM_CUSTOM_PROVIDER = 5;
+
+    int GETTING_LOCATION_FROM_PASSIVE_PROVIDER = 6;
 }

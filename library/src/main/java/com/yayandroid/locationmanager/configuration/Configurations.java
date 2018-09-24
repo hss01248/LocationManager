@@ -47,4 +47,17 @@ public final class Configurations {
               .useDefaultProviders(new DefaultProviderConfiguration.Builder().gpsMessage(gpsMessage).build())
               .build();
     }
+
+
+    public static LocationConfiguration fastConfiguration(@NonNull String rationalMessage, @NonNull String gpsMessage) {
+        return new LocationConfiguration.Builder()
+                .askForPermission(new PermissionConfiguration.Builder().rationaleMessage(rationalMessage).build())
+                .useGooglePlayServices(new GooglePlayServicesConfiguration.Builder().build())
+                .useDefaultProviders(new DefaultProviderConfiguration
+                        .Builder()
+                        .usePassiveProvider(true)
+                        .gpsMessage(gpsMessage)
+                        .build())
+                .build();
+    }
 }

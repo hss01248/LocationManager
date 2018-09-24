@@ -8,7 +8,7 @@ import java.lang.annotation.RetentionPolicy;
 @IntDef({FailType.UNKNOWN, FailType.TIMEOUT, FailType.PERMISSION_DENIED, FailType.NETWORK_NOT_AVAILABLE,
       FailType.GOOGLE_PLAY_SERVICES_NOT_AVAILABLE, FailType.GOOGLE_PLAY_SERVICES_CONNECTION_FAIL,
       FailType.GOOGLE_PLAY_SERVICES_SETTINGS_DIALOG, FailType.GOOGLE_PLAY_SERVICES_SETTINGS_DENIED,
-      FailType.VIEW_DETACHED, FailType.VIEW_NOT_REQUIRED_TYPE})
+      FailType.VIEW_DETACHED, FailType.VIEW_NOT_REQUIRED_TYPE,FailType.PASSIVE_NOT_AVAILABLE})
 @Retention(RetentionPolicy.SOURCE)
 public @interface FailType {
 
@@ -22,5 +22,6 @@ public @interface FailType {
     int GOOGLE_PLAY_SERVICES_SETTINGS_DENIED = 7;
     int VIEW_DETACHED = 8;
     int VIEW_NOT_REQUIRED_TYPE = 9;
+    int PASSIVE_NOT_AVAILABLE = 10;
 
 }

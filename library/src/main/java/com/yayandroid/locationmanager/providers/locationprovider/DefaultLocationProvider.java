@@ -134,8 +134,28 @@ public class DefaultLocationProvider extends LocationProvider
             LogUtils.logI("Network is enabled, getting location...");
             askForLocation(LocationManager.NETWORK_PROVIDER);
         } else {
-            LogUtils.logI("Network is not enabled, calling fail...");
-            onLocationFailed(FailType.NETWORK_NOT_AVAILABLE);
+            LogUtils.logI("Network is not enabled, check PassiveProvider...");
+            if(getConfiguration().defaultProviderConfiguration().isUsePassiveProvider()){
+                if(isPassiveProviderEnabled()){
+                    LogUtils.logI("PassiveProvider is enabled, getting location...");
+                    getLocationByPassive();
+                }else {
+                    LogUtils.logI("PassiveProvider is not enabled, calling fail...");
+                    onLocationFailed(FailType.PASSIVE_NOT_AVAILABLE);
+                }
+            }else {
+                LogUtils.logI("Network is not enabled, calling fail...");
+                onLocationFailed(FailType.NETWORK_NOT_AVAILABLE);
+            }
+
+        }
+    }
+
+    private void getLocationByPassive() {
+        if(isPassiveProviderEnabled()){
+            askForLocation(LocationManager.PASSIVE_PROVIDER);
+        }else {
+            onLocationFailed(FailType.PASSIVE_NOT_AVAILABLE);
         }
     }
 
@@ -177,10 +197,22 @@ public class DefaultLocationProvider extends LocationProvider
 
     void notifyProcessChange() {
         if (getListener() != null) {
-            getListener().onProcessTypeChanged(LocationManager.GPS_PROVIDER.equals(provider)
-                  ? ProcessType.GETTING_LOCATION_FROM_GPS_PROVIDER
-                  : ProcessType.GETTING_LOCATION_FROM_NETWORK_PROVIDER);
+            getListener().onProcessTypeChanged(getProcessType());
         }
+    }
+
+    private int getProcessType() {
+        if(LocationManager.GPS_PROVIDER.equals(provider)){
+            return ProcessType.GETTING_LOCATION_FROM_GPS_PROVIDER;
+        }
+        if(LocationManager.NETWORK_PROVIDER.equals(provider)){
+            return ProcessType.GETTING_LOCATION_FROM_NETWORK_PROVIDER;
+        }
+        if(LocationManager.GPS_PROVIDER.equals(provider)){
+            return ProcessType.GETTING_LOCATION_FROM_PASSIVE_PROVIDER;
+        }
+        return ProcessType.GETTING_LOCATION_FROM_CUSTOM_PROVIDER;
+
     }
 
     void requestUpdateLocation(long timeInterval, long distanceInterval, boolean setCancelTask) {
@@ -203,6 +235,10 @@ public class DefaultLocationProvider extends LocationProvider
 
     private boolean isGPSProviderEnabled() {
         return getSourceProvider().isProviderEnabled(LocationManager.GPS_PROVIDER);
+    }
+
+    private boolean isPassiveProviderEnabled() {
+        return getSourceProvider().isProviderEnabled(LocationManager.PASSIVE_PROVIDER);
     }
 
     void onLocationReceived(Location location) {
@@ -272,8 +308,16 @@ public class DefaultLocationProvider extends LocationProvider
             if (LocationManager.GPS_PROVIDER.equals(provider)) {
                 LogUtils.logI("We waited enough for GPS, switching to Network provider...");
                 getLocationByNetwork();
-            } else {
-                LogUtils.logI("Network Provider is not provide location in required period, calling fail...");
+            } else if(LocationManager.NETWORK_PROVIDER.equals(provider)){
+                if(!getConfiguration().defaultProviderConfiguration().isUsePassiveProvider()){
+                    LogUtils.logI("Network Provider is not provide location in required period, calling fail...");
+                    onLocationFailed(FailType.TIMEOUT);
+                }else {
+                    LogUtils.logI("We waited enough for Network, switching to passive provider...");
+                    getLocationByPassive();
+                }
+            }else if(LocationManager.PASSIVE_PROVIDER.equals(provider)){
+                LogUtils.logI("passive Provider is not provide location in required period, calling fail...");
                 onLocationFailed(FailType.TIMEOUT);
             }
         }

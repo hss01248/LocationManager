@@ -6,7 +6,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @IntDef({ProviderType.NONE, ProviderType.GOOGLE_PLAY_SERVICES,
-      ProviderType.GPS, ProviderType.NETWORK, ProviderType.DEFAULT_PROVIDERS})
+      ProviderType.GPS, ProviderType.NETWORK, ProviderType.DEFAULT_PROVIDERS, ProviderType.PASSIVE})
 @Retention(RetentionPolicy.SOURCE)
 public @interface ProviderType {
 
@@ -15,5 +15,6 @@ public @interface ProviderType {
     int GPS = 2;
     int NETWORK = 3;
     int DEFAULT_PROVIDERS = 4; // Covers both GPS and NETWORK
+    int PASSIVE = 5;
     
 }
