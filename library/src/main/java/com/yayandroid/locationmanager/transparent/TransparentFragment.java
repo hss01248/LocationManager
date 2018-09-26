@@ -24,6 +24,7 @@ public class TransparentFragment extends LocationBaseFragment  {
 
 
     private boolean oneshot = true;//采集一次,还是连续采集
+    private boolean inLocationProcess;//是不是在一个请求流程中
 
     public void setCallback(XLocationCallback callback) {
         this.callback = callback;
@@ -38,34 +39,49 @@ public class TransparentFragment extends LocationBaseFragment  {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+        getLocation();
+        //isCeated = true;
     }
 
     @Override
     public void getLocation() {
+        if(inLocationProcess){
+            return;
+        }
+        inLocationProcess = true;
         super.getLocation();
-        displayProgress();
+
+       /* if (getLocationManager().isWaitingForLocation()
+                && !getLocationManager().isAnyDialogShowing()){
+            displayProgress();
+        }*/
+
+
     }
 
     @Override
     public LocationConfiguration getLocationConfiguration() {
-        return Configurations.defaultConfiguration(getHostActivity().getString(LocationUtil.locationLibConfig.msgWhenrequestPermission()),
-                getHostActivity().getString(LocationUtil.locationLibConfig.msgWhenrequestGps()));
+        return Configurations.defaultConfiguration(LocationUtil.locationLibConfig.msgWhenrequestPermission(),
+                LocationUtil.locationLibConfig.msgWhenrequestGps());
     }
 
     @Override
     public void onLocationChanged(Location location) {
+        inLocationProcess = false;
         dismissProgress();
         if(callback != null){
             callback.onLocationChanged(location);
             if(oneshot){
                 callback = null;
+
             }
         }
     }
 
     @Override
     public void onLocationFailed(@FailType int failType) {
-        displayProgress();
+        inLocationProcess = false;
+        dismissProgress();
         if(callback != null){
             callback.onLocationFailed(failType, ErrorTypeToMsg.getMsg(failType));
             if(oneshot){
@@ -114,15 +130,19 @@ public class TransparentFragment extends LocationBaseFragment  {
 
     private void displayProgress() {
         if (progressDialog == null) {
-            String msg = getHostActivity().getString(LocationUtil.locationLibConfig.msgLoading());
-            if(LocationUtil.locationLibConfig == null){
+            String msg = LocationUtil.locationLibConfig.msgLoading();
+            ProgressDialog dialog = new ProgressDialog(getHostActivity());
+            dialog.getWindow().addFlags(Window.FEATURE_NO_TITLE);
+            dialog.setMessage(msg);
+            progressDialog  = dialog;
+            /*if(LocationUtil.locationLibConfig == null){
                 ProgressDialog dialog = new ProgressDialog(getHostActivity());
                 dialog.getWindow().addFlags(Window.FEATURE_NO_TITLE);
                 dialog.setMessage(msg);
                 progressDialog  = dialog;
             }else {
                 progressDialog = LocationUtil.locationLibConfig.buildLoadingDialog(msg,getHostActivity());
-            }
+            }*/
         }
 
         if (!progressDialog.isShowing()) {

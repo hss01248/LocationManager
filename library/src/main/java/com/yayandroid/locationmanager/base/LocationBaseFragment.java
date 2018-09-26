@@ -18,6 +18,9 @@ public abstract class LocationBaseFragment extends Fragment implements LocationL
     private Activity hostActivity;
 
     public Activity getHostActivity() {
+        if(hostActivity == null){
+            hostActivity = getActivity();
+        }
         return hostActivity;
     }
 
@@ -34,7 +37,7 @@ public abstract class LocationBaseFragment extends Fragment implements LocationL
         return locationManager;
     }
 
-    public void getLocation() {
+    protected void getLocation() {
         if (locationManager != null) {
             locationManager.get();
         } else {

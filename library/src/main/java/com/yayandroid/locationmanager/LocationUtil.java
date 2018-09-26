@@ -1,5 +1,6 @@
 package com.yayandroid.locationmanager;
 
+import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -25,20 +26,19 @@ public class LocationUtil {
     }
 
     public static void getLocation(@NonNull final FragmentActivity activity,XLocationCallback callback) {
-        TransparentFragment fragment = getTransFragment(activity.getSupportFragmentManager());
+        TransparentFragment fragment = getTransFragment(activity.getSupportFragmentManager(),  activity);
         fragment.setCallback(callback);
-        fragment.setHostActivity(activity);
         fragment.getLocation();
 
     }
 
     public static void getLocation(@NonNull final Fragment fragment,XLocationCallback callback) {
-        TransparentFragment fragment2 = getTransFragment(fragment.getChildFragmentManager());
+        TransparentFragment fragment2 = getTransFragment(fragment.getChildFragmentManager(),fragment.getActivity());
         fragment2.setCallback(callback);
         fragment2.getLocation();
     }
 
-    private static TransparentFragment getTransFragment(FragmentManager fragmentManager) {
+    private static TransparentFragment getTransFragment(FragmentManager fragmentManager,Activity activity) {
         TransparentFragment fragment = findFragment(fragmentManager);
         boolean isNewInstance = fragment == null;
         if (isNewInstance) {
@@ -48,6 +48,9 @@ public class LocationUtil {
                     .add(fragment, TAG)
                     .commitAllowingStateLoss();
             fragmentManager.executePendingTransactions();
+        }
+        if(activity != null){
+            fragment.setHostActivity(activity);
         }
         return fragment;
     }

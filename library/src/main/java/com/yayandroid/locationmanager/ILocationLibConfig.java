@@ -13,18 +13,18 @@ public interface ILocationLibConfig {
 
     void updateText(String text,Dialog dialog);
 
-    int msgWhenrequestGps();
+    String msgWhenrequestGps();
 
     /**
      *
      * @return
      */
-    int msgWhenrequestPermission();
+    String msgWhenrequestPermission();
 
     /**
      * Getting location...
      * @return
      */
-    int msgLoading();
+    String msgLoading();
 
 }
