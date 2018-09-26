@@ -20,16 +20,19 @@ public class TransparentFragment extends LocationBaseFragment  {
 
     private Dialog progressDialog;
     private XLocationCallback callback;
+
+
+
     private boolean oneshot = true;//采集一次,还是连续采集
-
-
 
     public void setCallback(XLocationCallback callback) {
         this.callback = callback;
     }
 
 
-
+    public void setOneshot(boolean oneshot) {
+        this.oneshot = oneshot;
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
