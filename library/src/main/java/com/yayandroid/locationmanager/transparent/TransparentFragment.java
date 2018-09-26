@@ -5,6 +5,8 @@ import android.app.ProgressDialog;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.Window;
 import com.yayandroid.locationmanager.LocationUtil;
 import com.yayandroid.locationmanager.XLocationCallback;
@@ -25,6 +27,7 @@ public class TransparentFragment extends LocationBaseFragment  {
 
     private boolean oneshot = true;//采集一次,还是连续采集
     private boolean inLocationProcess;//是不是在一个请求流程中
+    private boolean isRusumed;
 
     public void setCallback(XLocationCallback callback) {
         this.callback = callback;
@@ -50,11 +53,14 @@ public class TransparentFragment extends LocationBaseFragment  {
         }
         inLocationProcess = true;
         super.getLocation();
+        if(isRusumed){
+            if (getLocationManager().isWaitingForLocation()
+                    && !getLocationManager().isAnyDialogShowing()){
+                displayProgress();
+            }
+        }
 
-       /* if (getLocationManager().isWaitingForLocation()
-                && !getLocationManager().isAnyDialogShowing()){
-            displayProgress();
-        }*/
+
 
 
     }
@@ -73,6 +79,7 @@ public class TransparentFragment extends LocationBaseFragment  {
             callback.onLocationChanged(location);
             if(oneshot){
                 callback = null;
+               // removeFragment(this);
 
             }
         }
@@ -86,8 +93,19 @@ public class TransparentFragment extends LocationBaseFragment  {
             callback.onLocationFailed(failType, ErrorTypeToMsg.getMsg(failType));
             if(oneshot){
                 callback = null;
+               // removeFragment(this);
             }
         }
+    }
+
+    static void removeFragment(Fragment fragment){
+
+        FragmentManager fragmentManager = fragment.getFragmentManager();
+        if(fragmentManager == null){
+            return;
+        }
+        fragmentManager.beginTransaction()
+                .remove(fragment).commitNowAllowingStateLoss();
     }
 
     @Override
@@ -115,7 +133,7 @@ public class TransparentFragment extends LocationBaseFragment  {
     @Override
     public void onResume() {
         super.onResume();
-
+        isRusumed = true;
         if (getLocationManager().isWaitingForLocation()
               && !getLocationManager().isAnyDialogShowing()) {
             displayProgress();
@@ -126,6 +144,12 @@ public class TransparentFragment extends LocationBaseFragment  {
     public void onPause() {
         super.onPause();
         dismissProgress();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        isRusumed = false;
     }
 
     private void displayProgress() {
@@ -167,6 +191,7 @@ public class TransparentFragment extends LocationBaseFragment  {
     public void dismissProgress() {
         if (progressDialog != null && progressDialog.isShowing()) {
             progressDialog.dismiss();
+            progressDialog = null;
         }
     }
 

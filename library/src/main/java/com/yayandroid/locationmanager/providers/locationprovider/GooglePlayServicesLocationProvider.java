@@ -193,7 +193,7 @@ public class GooglePlayServicesLocationProvider extends LocationProvider impleme
             if (getActivity() != null) {
                 LogUtils.logI("Displaying the dialog...");
                 getSourceProvider().startSettingsApiResolutionForResult(status, getActivity());
-                settingsDialogIsOn = true;
+                //settingsDialogIsOn = true;
             } else {
                 LogUtils.logI("Settings Api cannot show dialog if LocationManager is not running on an activity!");
                 settingsApiFail(FailType.VIEW_NOT_REQUIRED_TYPE);
