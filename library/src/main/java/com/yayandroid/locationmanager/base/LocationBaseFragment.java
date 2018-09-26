@@ -1,5 +1,6 @@
 package com.yayandroid.locationmanager.base;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
@@ -14,6 +15,18 @@ import com.yayandroid.locationmanager.listener.LocationListener;
 public abstract class LocationBaseFragment extends Fragment implements LocationListener {
 
     private LocationManager locationManager;
+    private Activity hostActivity;
+
+    public Activity getHostActivity() {
+        return hostActivity;
+    }
+
+    public void setHostActivity(Activity hostActivity) {
+        this.hostActivity = hostActivity;
+    }
+
+
+
 
     public abstract LocationConfiguration getLocationConfiguration();
 
@@ -21,7 +34,7 @@ public abstract class LocationBaseFragment extends Fragment implements LocationL
         return locationManager;
     }
 
-    protected void getLocation() {
+    public void getLocation() {
         if (locationManager != null) {
             locationManager.get();
         } else {
