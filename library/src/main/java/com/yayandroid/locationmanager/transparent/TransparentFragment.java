@@ -155,18 +155,18 @@ public class TransparentFragment extends LocationBaseFragment  {
     private void displayProgress() {
         if (progressDialog == null) {
             String msg = LocationUtil.locationLibConfig.msgLoading();
-            ProgressDialog dialog = new ProgressDialog(getHostActivity());
+            /*ProgressDialog dialog = new ProgressDialog(getHostActivity());
             dialog.getWindow().addFlags(Window.FEATURE_NO_TITLE);
             dialog.setMessage(msg);
-            progressDialog  = dialog;
-            /*if(LocationUtil.locationLibConfig == null){
+            progressDialog  = dialog;*/
+            if(LocationUtil.locationLibConfig == null){
                 ProgressDialog dialog = new ProgressDialog(getHostActivity());
                 dialog.getWindow().addFlags(Window.FEATURE_NO_TITLE);
                 dialog.setMessage(msg);
                 progressDialog  = dialog;
             }else {
                 progressDialog = LocationUtil.locationLibConfig.buildLoadingDialog(msg,getHostActivity());
-            }*/
+            }
         }
 
         if (!progressDialog.isShowing()) {
